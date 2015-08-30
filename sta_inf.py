@@ -4,26 +4,17 @@ __author__ = 'key'
 
 # 保存转发，评论，赞数
 class FCL:
-    def __init__(self):
-        self.uid_count = 1.0  # 计算该用户出现了多少次，也就是发表了多少微薄
-        self.forward = 1.0
-        self.comment = 1.0
-        self.like = 1.0
-
-    def init_zero(self):
-        self.uid_count = 0.0
-        self.forward = 0.0
-        self.comment = 0.0
-        self.like = 0.0
+    def __init__(self, *par):
+        self.weibo_num, self.forward, self.comment, self.like = par
 
     def get_avg_forward(self):  # 用户每条微薄的平均转发数
-        return self.forward / self.uid_count
+        return self.forward / self.weibo_num
 
     def get_avg_comment(self):
-        return self.comment / self.uid_count
+        return self.comment / self.weibo_num
 
     def get_avg_like(self):
-        return self.like / self.uid_count
+        return self.like / self.weibo_num
 
 
 # 用于get_sta_inf函数
@@ -38,7 +29,7 @@ def get_url_tag_list(date, url_find, forward, comment, like, day_url_count):
             url_list[v].comment += comment
             url_list[v].like += like
         else:
-            url_list[v] = FCL()
+            url_list[v] = FCL(0, 0, 0, 0)
     return url_list
 
 
@@ -46,26 +37,27 @@ def get_url_tag_list(date, url_find, forward, comment, like, day_url_count):
 def get_sta_inf(train_list):
     day_url_count = {}  # 按天记录url的统计信息(转发/评论/赞)，也就是某一天，某个url被所有微薄转发/评论/赞的次数
     day_tag_count = {}  # 按天记录tag的统计信息(转发/评论/赞)，含义同上
-    user_count = {}  # 记录用户历史微博数,转发/评论/赞的统计信息
+    user_day_name = {}  # 记录用户每天的微博数,转发/评论/赞的统计信息
     for wb in train_list:
         uid = wb[0]
         date = wb[2]
-        forward = wb[3] + 1.0
-        comment = wb[4] + 1.0
-        like = wb[5] + 1.0
+        forward = wb[3]
+        comment = wb[4]
+        like = wb[5]
         url_find = wb[7]
         tag_find = wb[8]
         day_url_count[date] = get_url_tag_list(date, url_find, forward, comment, like, day_url_count)
         day_tag_count[date] = get_url_tag_list(date, tag_find, forward, comment, like, day_tag_count)
-        if uid in user_count:
-            user_count[uid].uid_count += 1.0
-            user_count[uid].forward += forward
-            user_count[uid].comment += comment
-            user_count[uid].like += like
+        if uid in user_day_name:
+            user_inf = user_day_name[uid]
+            if date in user_inf:
+                user_inf[date].weibo_num += 1.0
+                user_inf[date].forward += forward
+                user_inf[date].comment += comment
+                user_inf[date].like += like
+            else:
+                user_inf[date] = FCL(1.0, forward, comment, like)
         else:
-            user_count[uid] = FCL()
-            user_count[uid].forward = forward
-            user_count[uid].comment = comment
-            user_count[uid].like = like
-            #     uid_like[uid] = like
-    return day_url_count, day_tag_count, user_count
+            user_day_name[uid] = {}
+
+    return day_url_count, day_tag_count, user_day_name

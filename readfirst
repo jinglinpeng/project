@@ -1,0 +1,35 @@
+设置信息保存在constant.py中
+
+all_feature:
+len(url_find),url_sta.forward, url_sta.comment, url_sta.like
+len(tag_find),tag_sta.forward, tag_sta.comment, tag_sta.like
+len(user_find)
+avg_forward, avg_comment, avg_like
+
+part_feature:
+len(url_find),url_sta.forward, url_sta.comment, url_sta.like
+len(tag_find),tag_sta.forward, tag_sta.comment, tag_sta.like
+len(user_find)
+
+
+
+train_data:
+0-uid
+1-mid
+2-time
+3-forward_count
+4-comment_count
+5-like_count
+6-content
+7-url_find
+8-tag_find
+9-user_find
+
+predict_data:
+0-uid
+1-mid-
+2-time
+3-content
+4-url_find
+5-tag_find
+6-user_find

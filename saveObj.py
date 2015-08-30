@@ -8,7 +8,7 @@ def save_obj(obj, file_name):
     f1.close()
 
 
-# 从文件中读取对象
+#从文件中读取对象
 def read_obj(file_name):
     f2 = file(file_name, 'rb')
     return pickle.load(f2)
